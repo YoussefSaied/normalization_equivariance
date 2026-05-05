@@ -1,0 +1,5 @@
+model,train_sigma_8bit,train_sigma,psnr_db
+laplace_b_dncnn_l1_20,20,0.07843137,31.909219
+laplace_se_fdncnn_l1_20,20,0.07843137,31.8401
+laplace_ne_fdncnn_l1_20,20,0.07843137,31.802769
+laplace_wne_dncnn_l1_20,20,0.07843137,31.883233

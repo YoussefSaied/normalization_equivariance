@@ -1,0 +1,2 @@
+sigma_8bit,sigma,input_psnr_db,is_train_sigma,b_dncnn_25,b_fdncnn_25,ne_fdncnn_25,se_fdncnn_25,wne_dncnn_25,b,ne,se,wne
+25.0,0.09803922,20.172607,True,29.19239,29.206291,29.110328,29.1229,29.149196,,,,

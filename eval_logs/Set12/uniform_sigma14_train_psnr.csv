@@ -1,0 +1,5 @@
+model,train_sigma_8bit,train_sigma,psnr_db
+uniform_b_dncnn_l1_14,14,0.05490196,33.970154
+uniform_se_fdncnn_l1_14,14,0.05490196,33.777728
+uniform_ne_fdncnn_l1_14,14,0.05490196,33.743282
+uniform_wne_dncnn_l1_14,14,0.05490196,33.711207

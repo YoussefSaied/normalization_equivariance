@@ -1,0 +1,55 @@
+{
+  "train_path": "data",
+  "test_path": [
+    "data/Set12"
+  ],
+  "train_dataset_type": "h",
+  "train_image_dirs": [
+    "BSD400",
+    "DIV2K",
+    "Flickr2K",
+    "WaterlooExploration"
+  ],
+  "s_patch_size": 70,
+  "s_steps_per_epoch": 3000,
+  "s_samples_per_epoch": 384000,
+  "loss_type": "l1",
+  "batch_size": 128,
+  "num_epochs": 100,
+  "num_steps": 500000,
+  "psnr_eval_sigma_values": [
+    0.00392156862745098,
+    0.00784313725490196,
+    0.011764705882352941,
+    0.0196078431372549,
+    0.03137254901960784,
+    0.047058823529411764,
+    0.06666666666666667,
+    0.09803921568627451,
+    0.1411764705882353,
+    0.19607843137254902,
+    0.27450980392156865,
+    0.37254901960784315
+  ],
+  "model": "fdncnn",
+  "min_noise": 17,
+  "max_noise": 17,
+  "noise_type": "rayleigh",
+  "lr": 0.0001,
+  "lr_halving_epochs": null,
+  "lr_halving_steps": null,
+  "valid_interval": 1,
+  "save_interval": 1,
+  "log_interval": 100,
+  "seed": 0,
+  "model_cfg": {
+    "model_mode": "scale-equiv",
+    "wrapper_mode": "idem",
+    "pred_mode": "direct"
+  },
+  "wandb_cfg": {
+    "project": "scale_equivariance",
+    "name": "se_fdncnn_dir_l1_17_r_s_70_0117_2206",
+    "mode": "online"
+  }
+}

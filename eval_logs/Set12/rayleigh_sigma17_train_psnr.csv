@@ -1,0 +1,5 @@
+model,train_sigma_8bit,train_sigma,psnr_db
+rayleigh_b_dncnn_l1_17,17,0.06666667,32.659658
+rayleigh_se_fdncnn_l1_17,17,0.06666667,32.325952
+rayleigh_ne_fdncnn_l1_17,17,0.06666667,32.312343
+rayleigh_wne_dncnn_l1_17,17,0.06666667,32.318528

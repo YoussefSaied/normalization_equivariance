@@ -1,0 +1,3 @@
+model,train_sigma_8bit,train_sigma,psnr_db
+b_swinir_25,25.0,0.09803922,30.789718
+wne_swinir_25,25.0,0.09803922,30.647005

@@ -1,0 +1,15 @@
+label              device   backward (s)   inference (s) 
+---------------------------------------------------------
+gpu-wne            cuda     0.2706         0.1007        
+cpu-wne            cpu      18.2209        3.8108        
+gpu-baseline       cuda     0.2705         0.1006        
+cpu-baseline       cpu      16.3192        3.5296        
+
+{
+  "batch_size": 32,
+  "height": 64,
+  "width": 64,
+  "warmup": 3,
+  "steps": 10,
+  "skip_backward": false
+}

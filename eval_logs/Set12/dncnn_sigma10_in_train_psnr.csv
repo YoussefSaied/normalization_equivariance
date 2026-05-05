@@ -1,0 +1,4 @@
+model,train_sigma_8bit,train_sigma,psnr_db
+b_dncnn_10,10.0,0.03921569,34.928422
+wne_dncnn_10,10.0,0.03921569,34.783532
+wnei_dncnn_10,10.0,0.03921569,20.387787

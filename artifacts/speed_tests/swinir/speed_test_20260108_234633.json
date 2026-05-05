@@ -1,0 +1,71 @@
+{
+  "timestamp": "20260108_234633",
+  "settings": {
+    "batch_size": 32,
+    "height": 64,
+    "width": 64,
+    "warmup": 3,
+    "steps": 10,
+    "skip_backward": false
+  },
+  "results": [
+    {
+      "label": "gpu-wne",
+      "key": "wne_swinir",
+      "device": "cuda",
+      "model_name": "wne_swinir",
+      "model_mode": "ordinary",
+      "wrapper_mode": "norm-equiv",
+      "pred_mode": "direct",
+      "log_dir": null,
+      "checkpoint": null,
+      "weights_loaded": false,
+      "backward_s": 0.2706429040059447,
+      "inference_s": 0.10069605633616448
+    },
+    {
+      "label": "cpu-wne",
+      "key": "wne_swinir",
+      "device": "cpu",
+      "model_name": "wne_swinir",
+      "model_mode": "ordinary",
+      "wrapper_mode": "norm-equiv",
+      "pred_mode": "direct",
+      "log_dir": null,
+      "checkpoint": null,
+      "weights_loaded": false,
+      "backward_s": 18.220916622132062,
+      "inference_s": 3.8107901154085995
+    },
+    {
+      "label": "gpu-baseline",
+      "key": "b_swinir",
+      "device": "cuda",
+      "model_name": "b_swinir",
+      "model_mode": "ordinary",
+      "wrapper_mode": "idem",
+      "pred_mode": "direct",
+      "log_dir": null,
+      "checkpoint": null,
+      "weights_loaded": false,
+      "backward_s": 0.2705327769741416,
+      "inference_s": 0.10062306299805641
+    },
+    {
+      "label": "cpu-baseline",
+      "key": "b_swinir",
+      "device": "cpu",
+      "model_name": "b_swinir",
+      "model_mode": "ordinary",
+      "wrapper_mode": "idem",
+      "pred_mode": "direct",
+      "log_dir": null,
+      "checkpoint": null,
+      "weights_loaded": false,
+      "backward_s": 16.319223003089427,
+      "inference_s": 3.5295656718313695
+    }
+  ],
+  "torch_version": "2.9.0+cu128",
+  "cuda_available": true
+}

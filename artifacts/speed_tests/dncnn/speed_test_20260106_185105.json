@@ -1,0 +1,99 @@
+{
+  "timestamp": "20260106_185105",
+  "settings": {
+    "batch_size": 16,
+    "height": 128,
+    "width": 128,
+    "warmup": 3,
+    "steps": 10,
+    "skip_backward": false
+  },
+  "results": [
+    {
+      "label": "gpu-wne",
+      "key": "wne_fdncnn",
+      "device": "cuda",
+      "model_name": "wne_fdncnn",
+      "model_mode": "ordinary",
+      "wrapper_mode": "norm-equiv",
+      "pred_mode": "direct",
+      "log_dir": null,
+      "checkpoint": null,
+      "weights_loaded": false,
+      "backward_s": 0.033249269053339955,
+      "inference_s": 0.011256111599504948
+    },
+    {
+      "label": "cpu-wne",
+      "key": "wne_fdncnn",
+      "device": "cpu",
+      "model_name": "wne_fdncnn",
+      "model_mode": "ordinary",
+      "wrapper_mode": "norm-equiv",
+      "pred_mode": "direct",
+      "log_dir": null,
+      "checkpoint": null,
+      "weights_loaded": false,
+      "backward_s": 2.5121402215212583,
+      "inference_s": 0.8300126686692237
+    },
+    {
+      "label": "gpu-baseline",
+      "key": "b_fdncnn",
+      "device": "cuda",
+      "model_name": "b_fdncnn",
+      "model_mode": "ordinary",
+      "wrapper_mode": "idem",
+      "pred_mode": "direct",
+      "log_dir": null,
+      "checkpoint": null,
+      "weights_loaded": false,
+      "backward_s": 0.033560237288475035,
+      "inference_s": 0.011218591220676899
+    },
+    {
+      "label": "cpu-baseline",
+      "key": "b_fdncnn",
+      "device": "cpu",
+      "model_name": "b_fdncnn",
+      "model_mode": "ordinary",
+      "wrapper_mode": "idem",
+      "pred_mode": "direct",
+      "log_dir": null,
+      "checkpoint": null,
+      "weights_loaded": false,
+      "backward_s": 2.529584930278361,
+      "inference_s": 0.8241447940468788
+    },
+    {
+      "label": "gpu-norm-equiv",
+      "key": "ne_fdncnn",
+      "device": "cuda",
+      "model_name": "ne_fdncnn",
+      "model_mode": "norm-equiv",
+      "wrapper_mode": "idem",
+      "pred_mode": "direct",
+      "log_dir": null,
+      "checkpoint": null,
+      "weights_loaded": false,
+      "backward_s": 0.05372709557414055,
+      "inference_s": 0.018958976306021214
+    },
+    {
+      "label": "cpu-norm-equiv",
+      "key": "ne_fdncnn",
+      "device": "cpu",
+      "model_name": "ne_fdncnn",
+      "model_mode": "norm-equiv",
+      "wrapper_mode": "idem",
+      "pred_mode": "direct",
+      "log_dir": null,
+      "checkpoint": null,
+      "weights_loaded": false,
+      "backward_s": 3.7867110742256047,
+      "inference_s": 1.5697570152580738
+    }
+  ],
+  "torch_version": "2.9.0+cu128",
+  "cuda_available": true
+}

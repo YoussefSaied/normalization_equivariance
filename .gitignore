@@ -1,0 +1,37 @@
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
+
+wandb/
+*.out
+*.h5
+
+# Downloaded/raw datasets and temporary archives. Set12 and Set68 are kept in
+# the release for quick evaluation.
+data/*.zip
+data/*.tar
+data/*.tar.gz
+data/*.tgz
+data/*.rar
+data/BSD400/
+data/CBSD68/
+data/DIV2K/
+data/Flickr2K/
+data/WaterlooExploration/
+data/SIDD/
+data/SIDD_tmp/
+data/SIDD_train_tmp/
+data/SIDD_test_tmp/
+data/SIDD_validation_tmp/
+
+# Local training byproducts not intended for the compact release checkpoint set.
+logs/*/wandb/
+logs/*/checkpoints/
+logs/**/*.pt
+
+# Generated heavy analysis/sampler caches.
+artifacts/kadkhodaie_denoiser_sampler/
+artifacts/snr_hypothesis/**/model.pt
+artifacts/snr_hypothesis/**/outputs.npz
+artifacts/snr_hypothesis/**/cache/

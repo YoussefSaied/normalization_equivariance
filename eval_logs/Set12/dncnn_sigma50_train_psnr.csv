@@ -1,0 +1,5 @@
+model,train_sigma_8bit,train_sigma,psnr_db
+b_dncnn_50,50.0,0.19607843,27.167596
+se_fdncnn_50,50.0,0.19607843,27.194597
+ne_fdncnn_50,50.0,0.19607843,27.200709
+wne_dncnn_50,50.0,0.19607843,27.218785

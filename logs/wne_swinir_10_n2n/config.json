@@ -1,0 +1,58 @@
+{
+  "train_path": "data",
+  "test_path": [
+    "data/Set12"
+  ],
+  "train_dataset_type": "h",
+  "image_mode": null,
+  "train_image_dirs": [
+    "BSD400",
+    "DIV2K",
+    "Flickr2K",
+    "WaterlooExploration"
+  ],
+  "valid_path": null,
+  "valid_max_images": null,
+  "s_patch_size": 64,
+  "s_steps_per_epoch": 3000,
+  "s_samples_per_epoch": 96000,
+  "loss_type": "l2",
+  "batch_size": 32,
+  "num_epochs": 100,
+  "num_steps": 500000,
+  "psnr_eval_sigma_values": [
+    0.01,
+    0.02,
+    0.05,
+    0.075,
+    0.1,
+    0.15,
+    0.0392156862745098
+  ],
+  "model": "swinir",
+  "train_objective": "n2n",
+  "min_noise": 10.0,
+  "max_noise": 10.0,
+  "noise_type": "gaussian",
+  "soft_ne_loss": false,
+  "soft_ne_alpha_min": 0.0,
+  "soft_ne_alpha_max": 1.0,
+  "soft_ne_mu_min": 0.0,
+  "soft_ne_mu_max": 1.0,
+  "lr": 0.0001,
+  "lr_halving_epochs": null,
+  "lr_halving_steps": 100000,
+  "valid_interval": 10,
+  "log_interval": 100,
+  "seed": 0,
+  "model_cfg": {
+    "model_mode": "ordinary",
+    "wrapper_mode": "norm-equiv",
+    "pred_mode": "direct"
+  },
+  "wandb_cfg": {
+    "project": "scale_equivariance",
+    "name": "wne_swinir_dir_l2_10_h_64_n2n_0424_1205",
+    "mode": "online"
+  }
+}
