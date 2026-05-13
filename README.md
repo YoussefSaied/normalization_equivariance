@@ -2,7 +2,7 @@
 
 Exact normalization equivariance for CNN and transformer denoisers, without changing their internals.
 
-[Paper PDF](artifacts/paper/icml2026.pdf) · arXiv (coming) · [BibTeX](#citation)
+[arXiv](https://arxiv.org/abs/2605.08193) · [BibTeX](#citation)
 
 ![SwinIR denoising under noise-level mismatch](artifacts/figures/denoising/b_swinir_10_vs_wne_swinir_10_comparison.png)
 
@@ -127,7 +127,7 @@ For checkpoint-based evaluation, place each `weights_last.pt` under the correspo
 
 ## License
 
-Code: [MIT License](LICENSE). Paper PDF: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Code: [MIT License](LICENSE).
 
 ## Citation
 
