@@ -1,8 +1,8 @@
 """
 Render a SwinIR denoising comparison between a base model and its
-norm-equivariant (wrapper) counterpart. The script crops the Set68
-`test014` image to a square, adds training-level noise and a heavier
-test noise, denoises with both models, and writes a four-panel PDF.
+norm-equivariant (wrapper) counterpart. The script crops the configured
+image to a square, adds training-level noise and a heavier test noise,
+denoises with both models, and writes the four panels as separate PNG images.
 """
 
 from __future__ import annotations
@@ -13,24 +13,13 @@ from pathlib import Path
 os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
 
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
+from PIL import Image
 import torch
 
 from model_logs import models_log
 from se.configs import PROJECT_ROOT
-from se.models import build_model
-from se.utils.eval_utils import load_train_config, resolve_checkpoint_path
-from se.utils.psnr_plot import to_tensor01
-
-# Use a bundled serif font; keep LaTeX disabled to avoid external dependency
-plt.rcParams.update(
-    {
-        # "text.usetex": False,
-        "font.family": "serif",
-        "font.serif": ["DejaVu Serif"],
-    }
-)
+from se.utils.eval_utils import load_model_for_eval
 
 model_name = "swinir"
 eq_type = "wne"  # norm-equivariant wrapper
@@ -41,21 +30,13 @@ EQ_KEY = f"{eq_type}_{model_name}_{TRAIN_SIGMA_8BIT}"
 comparison_name = f"{BASE_KEY}_vs_{EQ_KEY}"
 # IMAGE_PATH = Path(f"{PROJECT_ROOT}/data/Set68/test053.png")
 IMAGE_PATH = Path(f"{PROJECT_ROOT}/data/Set12/07.png")
-OUTPUT_PATH = Path(f"{PROJECT_ROOT}/artifacts/{comparison_name}_comparison.pdf")
+OUTPUT_DIR = Path(f"{PROJECT_ROOT}/artifacts/{comparison_name}_comparison_pngs")
 TEST_SIGMA_8BIT = 90  # stronger than training noise to stress generalization
-DATASET_MODE = "s"  # grayscale conversion consistent with psnr_plot
 
 
 def build_model_from_key(key: str, device: torch.device):
-    log_dir = PROJECT_ROOT / models_log[key]
-    cfg = load_train_config(log_dir / "config.json")
-    ckpt = resolve_checkpoint_path(log_dir, epoch=None, explicit=None)
-
-    model = build_model(cfg)
-    state = torch.load(ckpt, map_location=device)
-    model.load_state_dict(state)
-    model.to(device).eval()
-    return model, cfg, ckpt
+    loaded = load_model_for_eval(PROJECT_ROOT / models_log[key], device)
+    return loaded.model, loaded.cfg, loaded.checkpoint_path
 
 
 def square_crop_top_right(arr: np.ndarray) -> np.ndarray:
@@ -74,8 +55,9 @@ def load_clean_tensor(path: Path, device: torch.device) -> torch.Tensor:
     if img_bgr is None:
         raise FileNotFoundError(f"Could not read image at {path}")
     cropped = square_crop_top_right(img_bgr)
-    clean = to_tensor01(cropped, mode=DATASET_MODE)
-    return clean.to(device)
+    grayscale = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+    clean = torch.from_numpy(grayscale.astype("float32")) / 255.0
+    return clean.unsqueeze(0).unsqueeze(0).to(device)
 
 
 def add_noise(img: torch.Tensor, sigma: float) -> torch.Tensor:
@@ -87,7 +69,14 @@ def tensor_to_img(t: torch.Tensor) -> np.ndarray:
     return t.squeeze(0).squeeze(0).cpu().numpy()
 
 
-def make_figure() -> tuple[Path, dict]:
+def save_grayscale_png(img: np.ndarray, path: Path) -> None:
+    if img.ndim != 2:
+        raise ValueError(f"Expected a grayscale 2D image, got shape {img.shape}.")
+    array = (np.clip(img, 0.0, 1.0) * 255.0).round().astype(np.uint8)
+    Image.fromarray(array).save(path)
+
+
+def save_panels() -> tuple[Path, dict]:
     torch.manual_seed(0)
     np.random.seed(0)
 
@@ -96,7 +85,6 @@ def make_figure() -> tuple[Path, dict]:
     eq_model, eq_cfg, eq_ckpt = build_model_from_key(EQ_KEY, device)
 
     clean = load_clean_tensor(IMAGE_PATH, device)
-    print(clean.shape)
     train_sigma_8bit = int(max(base_cfg.min_noise, base_cfg.max_noise))
     train_sigma = train_sigma_8bit / 255.0
     test_sigma = TEST_SIGMA_8BIT / 255.0
@@ -110,33 +98,20 @@ def make_figure() -> tuple[Path, dict]:
 
     panels = [
         (
+            f"noisy_train_sigma{train_sigma_8bit}.png",
             tensor_to_img(noisy_train),
-            f"Noisy training image\nσ = {train_sigma_8bit}",
         ),
-        (tensor_to_img(noisy_test), f"Noisy test image\nσ = {TEST_SIGMA_8BIT}"),
-        (tensor_to_img(denoised_base), "Test image denoised by\nSwinIR"),
-        (tensor_to_img(denoised_wne), "Test image denoised by\nSwinIR-WNE (ours)"),
+        (f"noisy_test_sigma{TEST_SIGMA_8BIT}.png", tensor_to_img(noisy_test)),
+        ("denoised_swinir.png", tensor_to_img(denoised_base)),
+        ("denoised_swinir_wne.png", tensor_to_img(denoised_wne)),
     ]
 
-    fig, axes = plt.subplots(1, len(panels), figsize=(9, 2.6))
-    for ax, (img, title) in zip(axes, panels):
-        ax.imshow(img, cmap="gray", vmin=0.0, vmax=1.0)
-        ax.axis("off")
-        ax.text(
-            0.5,
-            -0.06,
-            title,
-            ha="center",
-            va="top",
-            fontsize=10,
-            transform=ax.transAxes,
-        )
-
-    plt.tight_layout(rect=(0, 0.02, 1, 1))
-
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUTPUT_PATH, bbox_inches="tight")
-    plt.close(fig)
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    panel_outputs = {}
+    for filename, img in panels:
+        path = OUTPUT_DIR / filename
+        save_grayscale_png(img, path)
+        panel_outputs[filename] = str(path)
 
     metadata = {
         "device": str(device),
@@ -149,13 +124,14 @@ def make_figure() -> tuple[Path, dict]:
         "train_sigma_8bit": train_sigma_8bit,
         "test_sigma_8bit": TEST_SIGMA_8BIT,
         "image": str(IMAGE_PATH),
-        "output": str(OUTPUT_PATH),
+        "output_dir": str(OUTPUT_DIR),
+        "panel_outputs": panel_outputs,
     }
-    return OUTPUT_PATH, metadata
+    return OUTPUT_DIR, metadata
 
 
 if __name__ == "__main__":
-    out, meta = make_figure()
-    print(f"Saved figure to: {out}")
+    out, meta = save_panels()
+    print(f"Saved panel PNGs to: {out}")
     for k, v in meta.items():
         print(f"{k}: {v}")

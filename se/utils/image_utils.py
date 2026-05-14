@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
 
 import numpy as np
@@ -9,6 +10,7 @@ import torch
 
 
 FloatImageArray = NDArray[np.float32]
+GifDuration = int | Sequence[int]
 
 
 def load_grayscale_tensor(path: Path) -> torch.Tensor:
@@ -40,14 +42,7 @@ def tensor_to_image_array(tensor: torch.Tensor) -> FloatImageArray:
 
 
 def save_tensor_image(tensor: torch.Tensor, path: Path) -> None:
-    array = (tensor_to_image_array(tensor) * 255.0).round().astype(np.uint8)
-    if array.ndim == 2:
-        Image.fromarray(array, mode="L").save(path)
-        return
-    if array.ndim == 3 and array.shape[2] == 3:
-        Image.fromarray(array, mode="RGB").save(path)
-        return
-    raise ValueError(f"Unsupported image array shape {array.shape}.")
+    tensor_to_pil_image(tensor).save(path)
 
 
 def tensor_to_pil_image(tensor: torch.Tensor) -> Image.Image:
@@ -63,21 +58,66 @@ def save_tensor_gif(
     frames: list[torch.Tensor],
     path: Path,
     *,
-    duration_ms: int,
+    duration_ms: GifDuration,
     loop: int = 0,
 ) -> None:
     if not frames:
         raise ValueError("Cannot save a GIF without at least one frame.")
-    if duration_ms < 1:
-        raise ValueError("duration_ms must be at least 1.")
 
-    path.parent.mkdir(parents=True, exist_ok=True)
     images = [tensor_to_pil_image(frame) for frame in frames]
+    save_pil_gif(images, path, duration_ms=duration_ms, loop=loop)
+
+
+def save_image_files_gif(
+    image_paths: Sequence[Path],
+    path: Path,
+    *,
+    duration_ms: GifDuration,
+    loop: int = 0,
+) -> None:
+    if not image_paths:
+        raise ValueError("Cannot save a GIF without at least one frame.")
+
+    images: list[Image.Image] = []
+    for image_path in image_paths:
+        with Image.open(image_path) as image:
+            images.append(image.copy())
+    save_pil_gif(images, path, duration_ms=duration_ms, loop=loop)
+
+
+def save_pil_gif(
+    images: list[Image.Image],
+    path: Path,
+    *,
+    duration_ms: GifDuration,
+    loop: int = 0,
+) -> None:
+    if not images:
+        raise ValueError("Cannot save a GIF without at least one frame.")
+
+    duration = validate_gif_duration(duration_ms, len(images))
+    path.parent.mkdir(parents=True, exist_ok=True)
     first, *rest = images
     first.save(
         path,
         save_all=True,
         append_images=rest,
-        duration=duration_ms,
+        duration=duration,
         loop=loop,
     )
+
+
+def validate_gif_duration(duration_ms: GifDuration, frame_count: int) -> int | list[int]:
+    if isinstance(duration_ms, int):
+        if duration_ms < 1:
+            raise ValueError("duration_ms must be at least 1.")
+        return duration_ms
+
+    durations = list(duration_ms)
+    if len(durations) != frame_count:
+        raise ValueError(
+            f"Expected {frame_count} GIF durations, got {len(durations)}."
+        )
+    if any(duration < 1 for duration in durations):
+        raise ValueError("All GIF durations must be at least 1.")
+    return durations
